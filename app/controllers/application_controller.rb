@@ -15,4 +15,18 @@ class ApplicationController < ActionController::API
       render json: { errors: e.message }, status: :unauthorized
     end
   end
+
+  def authorize_user(permissions)
+    begin
+      if !@current_user
+        self.authorize_request
+      end
+
+      is_authorized = permissions.include? @current_user[:role]
+
+      raise "NoPermission" if !is_authorized
+    rescue RuntimeError, NoMethodError => e
+      render json: { errors: "Denied by role" }, status: :unauthorized
+    end
+  end
 end

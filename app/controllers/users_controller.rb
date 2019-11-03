@@ -1,6 +1,11 @@
 class UsersController < ApplicationController
   before_action :authorize_request, except: :create
   before_action :find_user, except: %i[create index]
+  before_action -> { authorize_user(['admin', 'manager']) },
+    only: [:index]
+
+  before_action -> { authorize_user(['admin', 'manager', 'user']) },
+    only: [:show, :update, :destroy]
 
   # GET /users
   def index
@@ -28,7 +33,7 @@ class UsersController < ApplicationController
   def update
     unless @user.update(user_params)
       render json: { errors: @user.errors.full_messages },
-             status: :unprocessable_entity
+            status: :unprocessable_entity
     end
   end
 
