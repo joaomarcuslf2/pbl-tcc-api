@@ -21,6 +21,7 @@ class UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
+    puts @user
     if @user.save
       render json: @user, status: :created
     else
@@ -52,7 +53,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.permit(
-      :avatar, :name, :username, :email, :password, :password_confirmation
+      :name, :username, :email, :password, :password_confirmation
     )
   end
 
