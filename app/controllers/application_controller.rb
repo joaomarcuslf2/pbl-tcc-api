@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   def not_found
-    render json: { error: 'not_found' }
+    render json: { errors: [ 'Resource not found' ] }, status: :not_found
   end
 
   def authorize_request
@@ -26,7 +26,7 @@ class ApplicationController < ActionController::API
 
       raise "NoPermission" if !is_authorized
     rescue RuntimeError, NoMethodError => e
-      render json: { errors: "Denied by role" }, status: :unauthorized
+      render json: { errors: [ 'Denied by role' ] }, status: :unauthorized
     end
   end
 end
