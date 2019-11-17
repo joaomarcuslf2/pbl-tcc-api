@@ -15,13 +15,12 @@ class UsersController < ApplicationController
 
   # GET /users/{username}
   def show
-    render json: @user, status: :ok
+    render json: @user.to_json(:include => :events), status: :ok
   end
 
   # POST /users
   def create
     @user = User.new(user_params)
-    puts @user
     if @user.save
       render json: @user, status: :created
     else
@@ -48,7 +47,7 @@ class UsersController < ApplicationController
   def find_user
     @user = User.find_by_username!(params[:_username])
     rescue ActiveRecord::RecordNotFound
-      render json: { errors: 'User not found' }, status: :not_found
+      render json: { errors: ['Usuário não encontrado'] }, status: :not_found
   end
 
   def user_params

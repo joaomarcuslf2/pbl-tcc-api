@@ -8,6 +8,16 @@ class User < ApplicationRecord
             length: { minimum: 6 },
             if: -> { new_record? || !password.nil? }
 
+  has_many :events
+
+  def events_count
+    self.events.count
+  end
+
+  def events_own
+    Event.where(user_id: self.id)
+  end
+
   private
     def default_values
       self.role ||= "user"
