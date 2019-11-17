@@ -10,6 +10,7 @@ class AuthenticationController < ApplicationController
       render json: {
                       token: token, exp: time.strftime("%m-%d-%Y %H:%M"),
                       name: @user.name,
+                      id: @user.id,
                       username: @user.username,
                       role: @user.role,
                   }, status: :ok

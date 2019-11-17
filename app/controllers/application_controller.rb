@@ -3,6 +3,23 @@ class ApplicationController < ActionController::API
     render json: { errors: [ 'Resource not found' ] }, status: :not_found
   end
 
+  #TODO Refactor later
+  def extract_user
+    header = request.headers['Authorization']
+    header = header.split(' ').last if header
+
+    begin
+      @decoded = JsonWebToken.decode(header)
+      @current_user = User.find(@decoded[:user_id])
+    rescue ActiveRecord::RecordNotFound => e
+      @current_user = nil
+    rescue JWT::DecodeError => e
+      @current_user = nil
+    end
+
+    @current_user
+  end
+
   def authorize_request
     header = request.headers['Authorization']
     header = header.split(' ').last if header
@@ -26,7 +43,7 @@ class ApplicationController < ActionController::API
 
       raise "NoPermission" if !is_authorized
     rescue RuntimeError, NoMethodError => e
-      render json: { errors: [ 'Denied by role' ] }, status: :unauthorized
+      render json: { errors: [ 'Você não tem permissão para essa operação' ] }, status: :unauthorized
     end
   end
 end
