@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
   # GET /users/{username}
   def show
-    render json: @user.to_json(:include => :events), status: :ok
+    render json: @user.to_json(:include => [:events, :inscriptions]), status: :ok
   end
 
   # POST /users

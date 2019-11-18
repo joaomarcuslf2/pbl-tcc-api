@@ -8,7 +8,18 @@ class EventsController < ApplicationController
   def index
     @events = Event.all.order(created_at: :desc)
 
-    render json: @events
+    render json: @events.to_json(:include => [:user, :inscriptions]), status: :ok
+  end
+
+  # GET /events/area/:areaName
+  def get_by_area
+    @events = Event.where("areas like ?", "%#{params[:areaName]}%").order(created_at: :desc)
+
+    if !@events.empty?
+      render json: @events, status: :ok
+    else
+      render json: { errors: ["Não há eventos dentro da busca"] }, status: :bad_request
+    end
   end
 
   # GET /events/1
@@ -60,6 +71,6 @@ class EventsController < ApplicationController
     end
 
     def event_params
-      params.require(:event).permit(:name, :areas, :active, :status, :file, :need_additional)
+      params.require(:event).permit(:name, :description, :areas, :active, :status, :file, :need_additional)
     end
 end

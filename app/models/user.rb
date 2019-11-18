@@ -9,6 +9,7 @@ class User < ApplicationRecord
             if: -> { new_record? || !password.nil? }
 
   has_many :events
+  has_many :inscriptions
 
   def events_count
     self.events.count
