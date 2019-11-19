@@ -17,6 +17,7 @@ gem 'puma', '~> 3.11'
 gem 'bcrypt', '~> 3.1.7'
 # Use Json Web Token (JWT) for token based authentication
 gem 'jwt'
+gem 'dalli'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
