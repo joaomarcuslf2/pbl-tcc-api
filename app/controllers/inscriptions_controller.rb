@@ -1,4 +1,8 @@
 class InscriptionsController < ApplicationController
+  before_action :authorize_request
+  before_action :set_inscription, only: [:destroy]
+
+  # POST /inscriptions
   def create
     incription = Inscription.where(inscription_params)
 
@@ -16,7 +20,16 @@ class InscriptionsController < ApplicationController
     return
   end
 
+  # DELETE /inscriptions/1
+  def destroy
+    @inscription.destroy
+  end
+
   private
+    def set_inscription
+      @inscription = Inscription.find(params[:id])
+    end
+
     def inscription_params
       params.require(:inscription).permit(:user_id, :event_id)
     end

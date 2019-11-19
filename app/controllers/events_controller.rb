@@ -1,14 +1,17 @@
 class EventsController < ApplicationController
   before_action :authorize_request
-  before_action :set_event, only: [:show, :update, :destroy]
+  before_action :set_event, only: [:show, :update, :destroy, :audit_finish]
   before_action -> { authorize_user(['admin', 'manager']) },
-    only: [:create, :destroy]
+    only: [:create, :destroy, :audit_finish]
 
   # GET /events
   def index
     @events = Event.all.order(created_at: :desc)
 
-    render json: @events.to_json(:include => [:user, :inscriptions]), status: :ok
+    render json: @events.to_json(:include => [
+      :user,
+      :inscriptions,
+    ]), status: :ok
   end
 
   # GET /events/area/:areaName
@@ -24,7 +27,34 @@ class EventsController < ApplicationController
 
   # GET /events/1
   def show
-    render json: @event
+    render json: @event.to_json(:include => [
+      :user,
+      {
+        requisite_events: {
+          include: [
+            :requisite
+          ]
+        }
+      },
+      {
+        groups: {
+          include: [
+            inscriptions: {
+              include: [
+                :user
+              ]
+            }
+          ]
+        }
+      },
+      {
+        inscriptions: {
+          include: [
+            :user
+          ]
+        }
+      },
+    ]), status: :ok
   end
 
   # POST /events
@@ -42,6 +72,35 @@ class EventsController < ApplicationController
       end
     else
       render json: { errors: ["Não foi possível encontrar o usuário"] }, status: :unprocessable_entity
+    end
+  end
+
+  # POST /events/1/audit-finish
+  def audit_finish
+    processed_inscriptions = GroupService.new(@event.inscriptions)
+
+    processed_inscriptions.computed.each { |g|
+      group = Group.new({
+        rate: g.rate,
+        event_id: @event.id
+      })
+
+      if group.save
+        g.members.each { |inscription|
+          inscription.group_id = group.id
+          inscription.save
+        }
+      else
+        render json: { errors: group.errors }, status: :unprocessable_entity
+      end
+    }
+
+    @event.status = 'started'
+
+    if @event.save
+      render json: @event, status: :created, location: @event
+    else
+      render json: { errors: @event.errors }, status: :unprocessable_entity
     end
   end
 
@@ -71,6 +130,6 @@ class EventsController < ApplicationController
     end
 
     def event_params
-      params.require(:event).permit(:name, :description, :areas, :active, :status, :file, :need_additional)
+      params.require(:event).permit(:name, :description, :areas, :active, :status, :file, :need_additional, :end_date)
     end
 end
