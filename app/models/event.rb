@@ -4,7 +4,10 @@ class Event < ApplicationRecord
   validates :user_id, presence: true
 
   belongs_to :user
+
   has_many :inscriptions
+  has_many :groups
+  has_many :requisite_events
 
   private
     def default_values
