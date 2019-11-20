@@ -131,16 +131,10 @@ class GroupService
     def get_group_number
         len = @raw.length.even? ? @raw.length : @raw.length - 1
 
-        magic_number = 1
+        magic_number = len <= 10 ? len : (len/2) - 1
 
-        if len >= 10
-            magic_number = len
-
-            while ((len/magic_number).to_i < 2) do
-                magic_number -= 1
-            end
-        else
-          magic_number = (((len/10.0) * 5.0) / 4.0)
+        while ((len/magic_number).to_i < 2) do
+            magic_number -= 1
         end
 
         magic_number.to_i
