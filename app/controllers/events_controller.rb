@@ -6,7 +6,7 @@ class EventsController < ApplicationController
 
   # GET /events
   def index
-    @events = Event.all.order(created_at: :desc)
+    @events = Event.where(active: true).order(created_at: :desc)
 
     render json: @events.to_json(:include => [
       :user,
@@ -113,6 +113,18 @@ class EventsController < ApplicationController
     end
   end
 
+  # PATCH/PUT /group/1
+  def update_group
+    @group = Group.find(params[:id])
+
+    if @group.update(group_params)
+      render json: @group
+    else
+      render json: { errors: @group.errors }, status: :unprocessable_entity
+    end
+  end
+
+
   # DELETE /events/1
   def destroy
     user = self.extract_user
@@ -131,5 +143,9 @@ class EventsController < ApplicationController
 
     def event_params
       params.require(:event).permit(:name, :description, :areas, :active, :status, :file, :need_additional, :end_date)
+    end
+
+    def group_params
+      params.permit(:file, :sent)
     end
 end
