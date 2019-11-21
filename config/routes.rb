@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   get '/events/area/:areaName', to: 'events#get_by_area'
   post '/events/:id/audit-finish', to: 'events#audit_finish'
+  put '/groups/:id', to: 'events#update_group'
 
   get '/*', to: 'application#not_found'
 end
