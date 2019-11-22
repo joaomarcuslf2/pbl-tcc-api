@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :inscriptions
   resources :events
+  resources :reviews
   resources :users, param: :_username
 
   post '/auth/login', to: 'authentication#login'
@@ -15,7 +16,12 @@ Rails.application.routes.draw do
 
   get '/events/area/:areaName', to: 'events#get_by_area'
   post '/events/:id/audit-finish', to: 'events#audit_finish'
+
+  post '/users/:id/rate/:event_id', to: 'users#update_rate'
+
   put '/groups/:id', to: 'events#update_group'
+
+  post '/recommendations', to: 'recommendations#create'
 
   get '/*', to: 'application#not_found'
 end
