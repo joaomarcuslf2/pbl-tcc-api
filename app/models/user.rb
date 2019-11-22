@@ -10,6 +10,8 @@ class User < ApplicationRecord
 
   has_many :events
   has_many :inscriptions
+  has_many :reviews
+  has_many :recommendations
 
   def events_count
     self.events.count

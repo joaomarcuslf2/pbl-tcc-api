@@ -146,6 +146,6 @@ class EventsController < ApplicationController
     end
 
     def group_params
-      params.permit(:file, :sent)
+      params.permit(:file, :sent, :reviewed)
     end
 end

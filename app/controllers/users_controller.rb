@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   before_action :authorize_request, except: :create
-  before_action :find_user, except: %i[create index]
+  before_action :find_user, except: %i[create index update_rate]
   before_action -> { authorize_user(['admin', 'manager']) },
-    only: [:index]
+    only: [:index, :update_rate]
 
   before_action -> { authorize_user(['admin', 'manager', 'user']) },
     only: [:show, :update, :destroy]
@@ -15,7 +15,12 @@ class UsersController < ApplicationController
 
   # GET /users/{username}
   def show
-    render json: @user.to_json(:include => [:events, :inscriptions]), status: :ok
+    render json: @user.to_json(:include => [:events, :inscriptions, {
+      reviews: { include: [ :event, :requisite ]}
+    },
+    {
+      recommendations: { include: [ :event, :requisite ]}
+    }]), status: :ok
   end
 
   # POST /users
@@ -26,6 +31,45 @@ class UsersController < ApplicationController
     else
       render json: { errors: @user.errors.full_messages },
              status: :unprocessable_entity
+    end
+  end
+
+  # POST /users/1/rate/1
+  def update_rate
+    @user = User.find(params[:id])
+
+    id = params[:id]
+    event_id = params[:event_id]
+    rate = params[:rate]
+
+    reviews = @user.reviews.where(event_id: event_id)
+    weights = 0
+    values = 0
+
+    reviews.each { |review|
+      values += review.value * review.weight
+      weights += review.weight
+    }
+
+    ra = @user.rate
+    po = RateService.new(@user.rate, rate).points_acquired
+    pe = 1
+    pr = values/weights
+
+    r = ra + 10*(po-pe) + pr
+
+    # R = ra + 10*(po-pe) + pr, onde:
+    #   R: pontuação atual
+    #   Ra: pontuação anterior
+    #   Po: pontos obtidos
+    #   Pe: pontos esperados
+    #   Pr: Pontuação por critérios de avaliação - a média ponderada de todos os critérios de avaliação que aquele evento tiver.
+
+    @user.rate = r
+
+    unless @user.save
+      render json: { errors: @user.errors.full_messages },
+            status: :unprocessable_entity
     end
   end
 
