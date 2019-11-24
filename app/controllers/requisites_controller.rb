@@ -1,4 +1,4 @@
-class RequisitesController < ApplicationController
+class RequisitesController < CrudController
   before_action :authorize_request
   before_action -> { authorize_user(['admin', 'manager']) },
     only: [:create]

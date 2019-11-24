@@ -1,4 +1,4 @@
-class UsersController < ApplicationController
+class UsersController < CrudController
   before_action :authorize_request, except: :create
   before_action :find_user, except: %i[create index update_rate]
   before_action -> { authorize_user(['admin', 'manager']) },
@@ -51,12 +51,14 @@ class UsersController < ApplicationController
       weights += review.weight
     }
 
-    ra = @user.rate
-    po = RateService.new(@user.rate, rate).points_acquired
-    pe = 1
+    obj = RateService.new(@user.rate, rate)
+
+    ra = @user.rate || 1200
+    po = obj.points_acquired
+    pe = (@user.rate - rate) > 0 ? 10 : -10
     pr = values/weights
 
-    r = ra + 10*(po-pe) + pr
+    r = ra + 10*(po+pe) + pr
 
     # R = ra + 10*(po-pe) + pr, onde:
     #   R: pontuação atual
