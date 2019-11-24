@@ -1,4 +1,4 @@
-class AreasController < ApplicationController
+class AreasController < CrudController
   before_action :authorize_request
   # GET /areas
   def index

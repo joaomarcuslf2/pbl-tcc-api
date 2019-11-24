@@ -1,4 +1,4 @@
-class InscriptionsController < ApplicationController
+class InscriptionsController < CrudController
   before_action :authorize_request
   before_action :set_inscription, only: [:destroy]
 

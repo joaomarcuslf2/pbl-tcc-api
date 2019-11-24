@@ -1,4 +1,4 @@
-class EventsController < ApplicationController
+class EventsController < CrudController
   before_action :authorize_request
   before_action :set_event, only: [:show, :update, :destroy, :audit_finish]
   before_action -> { authorize_user(['admin', 'manager']) },

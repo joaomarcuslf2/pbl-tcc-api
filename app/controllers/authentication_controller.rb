@@ -1,4 +1,4 @@
-class AuthenticationController < ApplicationController
+class AuthenticationController < CrudController
   before_action :authorize_request, except: :login
 
   # POST /auth/login
