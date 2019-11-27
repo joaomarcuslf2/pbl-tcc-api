@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get '/areas/metrics', to: 'areas#get_with_metrics'
   get '/areas/:username', to: 'areas#get_from_username'
 
+  get '/ranks', to: "ranks#index"
+
   get '/requisites', to: 'requisites#index'
   post '/requisites', to: 'requisites#create'
   post '/requisites/:id/event/:event_id', to: 'requisites#create_requisite_event'
