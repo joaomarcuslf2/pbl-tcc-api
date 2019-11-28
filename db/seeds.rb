@@ -1,10 +1,59 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+names = [
+  "Maria",
+  "Letícia",
+  "Rosângela",
+  "Anna",
+  "Ana",
+  "Carla",
+  "Nicole",
+  "Sandra",
+  "Larissa",
+  "Marina",
+  "Hellen",
+  "Fernando",
+  "João",
+  "Cristiano",
+  "Luciano",
+  "César",
+  "Allan",
+  "Carlos",
+  "Jordan",
+  "Erique",
+  "Henrique",
+  "Felipe",
+  "Thiago",
+  "Rodolfo"
+]
+
+surnames = [
+  "Fernandes",
+  "Alves",
+  "Gomes",
+  "de Souza",
+  "Moraes",
+  "Lemos",
+  "Aguiar",
+  "da Silva",
+  "Silva",
+  "Souza"
+]
+
+eventsNames = [
+  "HACKATHON: Desenvolvimento social e urbano",
+  "Projeto final: Projeto de conclusão do curso",
+  "Teste: Envio dos resultados da matéria",
+  "Hackathon: Planejamento de estruturas",
+  "Hackathon: Teste de evento",
+  "Hackathon: Gamificação aplicada à matéria",
+  "Hackathon: Teste de evento",
+]
+
+areas = [
+  "Redes",
+  "Algoritmo",
+  "Estrutura de Dados",
+  "Matemática"
+]
 
 User.create(username: "admin", email: "admin@admin.com", role: "admin", password: "@admin123")
 
@@ -13,20 +62,13 @@ User.create(username: "admin", email: "admin@admin.com", role: "admin", password
 }
 
 (7..22).each { |ref|
-  User.create(username: "user#{ref}", email: "user#{ref}@email.com", role: "user", password: "@user123", rate: 1200 + rand(0..550))
+  User.create(username: "user#{ref}", email: "user#{ref}@email.com", role: "user", password: "@user123", rate: 1200 + rand(0..250), name: "#{names.sample} #{surnames.sample}")
 }
 
 (1..7).each { |ref|
-  areas = [
-    "Redes",
-    "Algoritmo",
-    "Estrutura de Dados",
-    "Matemática"
-  ]
-
   event = Event.create(
-    name: "Hackathon com nome genérico #{ref}",
-    description: "descrição genérica",
+    name: eventsNames[ref] || "#{eventsNames.sample} #{ref}",
+    description: "Descrição do evento #{eventsNames[ref]}",
     active: rand(0..3) > 0 ? true : false,
     status: "waiting",
     need_additional: rand(0..3) == 0 ? true : false,
