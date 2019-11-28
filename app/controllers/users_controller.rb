@@ -42,13 +42,13 @@ class UsersController < CrudController
     event_id = params[:event_id]
     rate = params[:rate]
 
-    reviews = @user.reviews.where(event_id: event_id)
+    reviews = Review.where(event_id: event_id, user_id: id)
     weights = 0
     values = 0
 
     reviews.each { |review|
-      values += review.value * review.weight
-      weights += review.weight
+      values += review.value * (review.weight || 1)
+      weights += (review.weight || 1)
     }
 
     obj = RateService.new(@user.rate, rate)
