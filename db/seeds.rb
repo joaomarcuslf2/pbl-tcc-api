@@ -61,7 +61,7 @@ User.create(username: "admin", email: "admin@admin.com", role: "admin", password
   User.create(username: "manager#{ref}", email: "manager#{ref}@email.com", role: "manager", password: "@manager123")
 }
 
-(7..22).each { |ref|
+(1..22).each { |ref|
   User.create(username: "user#{ref}", email: "user#{ref}@email.com", role: "user", password: "@user123", rate: 1200 + rand(0..250), name: "#{names.sample} #{surnames.sample}")
 }
 
@@ -76,7 +76,7 @@ User.create(username: "admin", email: "admin@admin.com", role: "admin", password
     areas: "#{areas[rand(0..3)]},#{areas[rand(0..3)]}"
   )
 
-  initial = rand(7..20)
+  initial = rand(1..20)
   final = rand(21..22)
 
   (initial..final).each { |user_id|
