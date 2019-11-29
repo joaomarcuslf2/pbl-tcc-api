@@ -41,7 +41,7 @@ class EventsController < CrudController
           include: [
             inscriptions: {
               include: [
-                :user
+                { user:  { include: [ :reviews ] } }
               ]
             }
           ]
