@@ -18,7 +18,16 @@ class ReviewsController < CrudController
     @reviews = Review.where(review_params)
 
     if @reviews.length > 0
-      render json: @reviews.to_json(include: [ :event, :requisite ]), status: :ok
+      render json: @reviews.to_json(include: [
+        :event,
+        {
+          requisite: {
+            include: [
+              :pills
+            ]
+          }
+        }
+      ]), status: :ok
     else
       render json: { errors: "Não possui revisões" },
              status: :not_found
